@@ -1,0 +1,27 @@
+[user]
+	email = jwu@efunda.com
+	name = James Wu
+[core]
+  editor = /usr/local/bin/vim
+[branch]
+  autosetuprebase = always
+[color]
+  ui = always
+[push]
+  default = current
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow
+  frag = magenta
+  old = red
+  new = green
+  whitespace = red reverse
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = red
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
