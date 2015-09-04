@@ -6,17 +6,34 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
   Plugin 'scrooloose/nerdtree'
+  Plugin 'jistr/vim-nerdtree-tabs'
   Plugin 'Raimondi/delimitMate'
   Plugin 'tpope/vim-surround'
   Plugin 'myusuf3/numbers.vim'
-  Plugin 'Valloric/YouCompleteMe'
   Plugin 'tpope/vim-fugitive'
+  Plugin 'kien/ctrlp.vim'
 
 call vundle#end()
 
-map <C-n> :NERDTreeToggle<CR>
-map <Leader>n <plug>NERDTreeTabsToggle<CR>
+"map <C-n> :NERDTreeToggle<CR>
+map <C-n> <plug>NERDTreeTabsToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+"better tab navigation
+nnoremap <C-h> :tabprevious<CR>
+nnoremap <C-l> :tabnext<CR>
+nnoremap <C-t> :tabnew<CR>
+inoremap <C-h> <Esc>:tabprevious<CR>i
+inoremap <C-l> <Esc>:tabnext<CR>i
+inoremap <C-t> <Esc>:tabnew<CR>i
+
+"ctrl-p invocation
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'rc'
+let g:ctrlp_max_files = 0
+let g:ctrlp_max_depth = 50
+let g:ctrlp_follow_symlinks = 1
 
 set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 filetype plugin indent on
@@ -26,6 +43,8 @@ set incsearch
 set mouse=a
 set nu
 set ruler
+set scrolloff=4
+set ttyfast
 "set columns=80
 "set wrapmargin=8
 "set colorcolumn=80
@@ -41,7 +60,7 @@ set fileformats=unix,dos,mac
 set cmdheight=2
 set showcmd
 set noerrorbells
-"set wrap
+set cursorline
 set autoindent
 set smartindent
 set nobackup
