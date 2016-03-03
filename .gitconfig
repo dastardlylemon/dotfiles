@@ -1,6 +1,6 @@
 [user]
-	email = jwu@efunda.com
-	name = James Wu
+  email = jwu@efunda.com
+  name = James Wu
 [core]
   editor = /usr/local/bin/vim
 [branch]
@@ -24,4 +24,4 @@
   changed = green
   untracked = red
 [alias]
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
