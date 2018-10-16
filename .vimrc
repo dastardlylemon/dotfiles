@@ -20,15 +20,23 @@ call vundle#begin()
   Plugin 'Raimondi/delimitMate'
   Plugin 'tpope/vim-surround'
   Plugin 'tpope/vim-commentary.git'
+  Plugin 'tpope/vim-sleuth'
   Plugin 'myusuf3/numbers.vim'
   Plugin 'tpope/vim-fugitive'
-  Plugin 'kien/ctrlp.vim'
+  Plugin 'ctrlpvim/ctrlp.vim'
+  Plugin 'unblevable/quick-scope'
+
+  " Debugging
+  Plugin 'joonty/vdebug'
+  Plugin 'w0rp/ale'
 
   " Syntax
   Plugin 'derekwyatt/vim-scala'
   Plugin 'mxw/vim-jsx'
   Plugin 'nikvdp/ejs-syntax'
   Plugin 'pangloss/vim-javascript'
+  Plugin 'StanAngeloff/php.vim'
+  Plugin 'mustache/vim-mustache-handlebars'
   Plugin 'keith/tmux.vim'
 
 call vundle#end()
@@ -39,9 +47,13 @@ filetype indent on
 "-------------------------------------------------------------------------------
 " General Settings
 
+let mapleader=","
+let maplocalleader=","
+
 set encoding=utf-8
 set history=200
 set fileformats=unix,dos,mac
+set wildmenu
 
 set backspace=indent,eol,start
 
@@ -69,6 +81,15 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 autocmd FocusLost * silent! wa
 
+fun! Refresh()
+  set noconfirm
+  bufdo e!
+  syntax on
+  set confirm
+endfun
+
+nnoremap <leader>r :call Refresh()<CR>
+
 "-------------------------------------------------------------------------------
 " Text Settings
 
@@ -81,16 +102,18 @@ set smarttab
 set smartindent
 set autoindent
 
-set nowrap
+set wrap
 
 " Highlight over 80 columns
-highlight OverLength ctermbg=red ctermfg=white
-match OverLength /\%81v.\+/
+" highlight OverLength ctermbg=red ctermfg=white
+" match OverLength /\%81v.\+/
 
 "-------------------------------------------------------------------------------
 " UI Settings
 
 syntax on
+colorscheme onedark
+let g:onedark_termcolors=16
 
 set hlsearch
 
@@ -113,6 +136,11 @@ set showmatch
 
 set splitright
 
+set background=dark
+
+" let g:php_folding=1
+" set foldmethod=syntax
+
 "-------------------------------------------------------------------------------
 " Search/Autocomplete
 
@@ -134,7 +162,42 @@ let g:ctrlp_working_path_mode = 'rc'
 let g:ctrlp_max_files = 0
 let g:ctrlp_max_depth = 50
 let g:ctrlp_follow_symlinks = 1
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|_site|output)|(\.(swp|ico|git|svn))$'
+
+if executable('ag')
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+  let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|_site|output)|(\.(swp|ico|git|svn))$'
+endif
+
+" VDebug
+let g:vdebug_options = {
+\ 'path_maps': {'/var/www/html/htdocs': '/Users/jameswu/Skillshare/skillshare/htdocs'},
+\ 'port': '9000',
+\ 'watch_window_style': 'compact'
+\ }
+
+" Ale
+let g:ale_linters = {
+\ 'javascript': ['eslint']
+\}
+
+let g:ale_fixers = {
+\ 'javascript': ['eslint']
+\}
+
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_set_quickfix = 1
+let g:ale_open_list = 1
+
+nmap <leader>f <Plug>(ale_fix)
+
+" Mustache shortcuts
+let g:mustache_abbreviations = 1
+
+" Quickscope
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 " Better tab navigation
 nnoremap <C-h> :tabprevious<CR>
@@ -143,3 +206,7 @@ nnoremap <C-t> :tabnew<CR>
 inoremap <C-h> <Esc>:tabprevious<CR>i
 inoremap <C-l> <Esc>:tabnext<CR>i
 inoremap <C-t> <Esc>:tabnew<CR>i
+
+" Visual vertical movement
+nnoremap j gj
+nnoremap k gk

@@ -17,9 +17,10 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias vi='vim'
-alias ratchet='racket'
-alias mysql='/Applications/MAMP/Library/bin/mysql --host=localhost -uroot -proot'
 
+alias spoofmac="openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//' | xargs sudo ifconfig en0 ether"
+
+alias cleanup="git branch --merged master --no-color | grep -v "master" | xargs git branch -D"
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
 
 # Uncomment the following line to use case-sensitive completion.
