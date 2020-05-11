@@ -10,18 +10,55 @@ ZSH_THEME="bureau"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias ocaml='rlwrap ocaml'
-alias ls='ls --auto'
 alias zshrc='vim ~/.zshrc'
+alias vimrc='vim ~/.vimrc'
+alias tmuxconf='vim ~/.tmux.conf'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias vi='vim'
 
+# fzf utils
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
+_gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
+_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
+
+fbr() {
+  local branches branch
+  branches=$(git --no-pager branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+fshow() {
+    glNoGraph |
+        fzf --no-sort --reverse --tiebreak=index --no-multi \
+            --ansi --preview="$_viewGitLogLine" \
+                --header "enter to view, alt-y to copy hash" \
+                --bind "enter:execute:$_viewGitLogLine   | less -R" \
+                --bind "alt-y:execute:$_gitLogLineToHash | xclip"
+}
+
+# airbnb utils
+export NODE_OPTIONS="--max-old-space-size=8192"
+alias sc="npm run -s sanity-check --"
+alias sb="npm run storybook:dev "
+
+
 alias spoofmac="openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//' | xargs sudo ifconfig en0 ether"
 
 alias cleanup="git branch --merged master --no-color | grep -v "master" | xargs git branch -D"
 git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+
+
+# afdev
+export DATA_DIR=$HOME/data #PATH WHERE YOU CLONED THE DATA REPO
+export AFDEV_HOST="i-0108c4fc978d096fa.inst.aws.airbnb.com" #CHOOSE A DIFFERENT HOST
+export AFDEV_PORT=65420 # CHOOSE A DIFFERENT PORT
+export AFDEV_USER="$USER" # ENTER YOUR LDAP USERNAME IF DIFFERENT THAN LOCAL ONE
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -66,7 +103,6 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH="/usr/local/bin:/usr/local/share/npm/bin:/usr/local/heroku/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/usr/local/git/bin:/usr/texbin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -86,3 +122,23 @@ export PATH="/usr/local/bin:/usr/local/share/npm/bin:/usr/local/heroku/bin:/Libr
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+export PATH=$JAVA_HOME/bin:$PATH
+
+# AIRLAB-DO-NOT-MODIFY section:ShellWrapper {{{
+# Airlab will only make edits inside these delimiters.
+
+# Source Airlab's shell integration, if it exists.
+if [ -e ~/.airlab/shellhelper.sh ]; then
+  source ~/.airlab/shellhelper.sh
+fi
+# AIRLAB-DO-NOT-MODIFY section:ShellWrapper }}}
+export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
+
+source <(yak completion zsh)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

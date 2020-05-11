@@ -4,42 +4,40 @@ endif
 
 filetype off
 
-set rtp+=~/.vim/bundle/Vundle.vim
-
 "-------------------------------------------------------------------------------
-" Vundle Plugins
+" Plugins
 
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
   " UI
-  Plugin 'scrooloose/nerdtree'
-  Plugin 'jistr/vim-nerdtree-tabs'
-  Plugin 'lilydjwg/colorizer'
+  Plug 'scrooloose/nerdtree'
+  Plug 'jistr/vim-nerdtree-tabs'
+  Plug 'Xuyuanp/nerdtree-git-plugin'
+  Plug 'lilydjwg/colorizer'
 
   " Integrations
-  Plugin 'Raimondi/delimitMate'
-  Plugin 'tpope/vim-surround'
-  Plugin 'tpope/vim-commentary.git'
-  Plugin 'tpope/vim-sleuth'
-  Plugin 'myusuf3/numbers.vim'
-  Plugin 'tpope/vim-fugitive'
-  Plugin 'ctrlpvim/ctrlp.vim'
-  Plugin 'unblevable/quick-scope'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'Raimondi/delimitMate'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-sleuth'
+  Plug 'myusuf3/numbers.vim'
+  Plug 'tpope/vim-fugitive'
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+  Plug 'unblevable/quick-scope'
 
   " Debugging
-  Plugin 'joonty/vdebug'
-  Plugin 'w0rp/ale'
+  Plug 'w0rp/ale'
 
   " Syntax
-  Plugin 'derekwyatt/vim-scala'
-  Plugin 'mxw/vim-jsx'
-  Plugin 'nikvdp/ejs-syntax'
-  Plugin 'pangloss/vim-javascript'
-  Plugin 'StanAngeloff/php.vim'
-  Plugin 'mustache/vim-mustache-handlebars'
-  Plugin 'keith/tmux.vim'
+  Plug 'mxw/vim-jsx'
+  Plug 'nikvdp/ejs-syntax'
+  Plug 'pangloss/vim-javascript'
+  Plug 'leafgarland/typescript-vim'
+  Plug 'peitalin/vim-jsx-typescript'
 
-call vundle#end()
+call plug#end()
 
 filetype plugin on
 filetype indent on
@@ -54,6 +52,7 @@ set encoding=utf-8
 set history=200
 set fileformats=unix,dos,mac
 set wildmenu
+set updatetime=300
 
 set backspace=indent,eol,start
 
@@ -105,8 +104,8 @@ set autoindent
 set wrap
 
 " Highlight over 80 columns
-" highlight OverLength ctermbg=red ctermfg=white
-" match OverLength /\%81v.\+/
+highlight OverLength ctermbg=red ctermfg=white
+match OverLength /\%81v.\+/
 
 "-------------------------------------------------------------------------------
 " UI Settings
@@ -154,36 +153,26 @@ set smartcase
 " NERDTree
 map <C-n> <plug>NERDTreeTabsToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
 
-" CtrlP
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'rc'
-let g:ctrlp_max_files = 0
-let g:ctrlp_max_depth = 50
-let g:ctrlp_follow_symlinks = 1
-
-if executable('ag')
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-else
-  let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist|_site|output)|(\.(swp|ico|git|svn))$'
-endif
-
-" VDebug
-let g:vdebug_options = {
-\ 'path_maps': {'/var/www/html/htdocs': '/Users/jameswu/Skillshare/skillshare/htdocs'},
-\ 'port': '9000',
-\ 'watch_window_style': 'compact'
-\ }
+" fzf
+nnoremap <leader>p :Files<CR>
+nnoremap <leader>P :GFiles<CR>
+nnoremap <leader>l :Lines<CR>
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>h :History<CR>
 
 " Ale
 let g:ale_linters = {
-\ 'javascript': ['eslint']
+\ 'javascript': ['eslint'],
+\ 'typescript': ['tsserver', 'eslint'],
 \}
 
 let g:ale_fixers = {
-\ 'javascript': ['eslint']
+\ 'javascript': ['eslint'],
+\ 'typescript': ['eslint'],
 \}
 
 let g:ale_lint_on_enter = 0
@@ -210,3 +199,67 @@ inoremap <C-t> <Esc>:tabnew<CR>i
 " Visual vertical movement
 nnoremap j gj
 nnoremap k gk
+
+"-------------------------------------------------------------------------------
+" CoC settings
+set hidden
+set shortmess+=c
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Use <TAB> for select selections ranges, needs server support, like: coc-tsserver, coc-python
+nmap <silent> <TAB> <Plug>(coc-range-select)
+xmap <silent> <TAB> <Plug>(coc-range-select)
+
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add status line support, for integration with other plugin, checkout `:h coc-status`
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
