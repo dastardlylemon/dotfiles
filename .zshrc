@@ -17,6 +17,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias vi='vim'
+alias tmas='tmux attach-session -t'
 
 # fzf utils
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
@@ -124,18 +125,6 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 export PATH=$JAVA_HOME/bin:$PATH
-
-# AIRLAB-DO-NOT-MODIFY section:ShellWrapper {{{
-# Airlab will only make edits inside these delimiters.
-
-# Source Airlab's shell integration, if it exists.
-if [ -e ~/.airlab/shellhelper.sh ]; then
-  source ~/.airlab/shellhelper.sh
-fi
-# AIRLAB-DO-NOT-MODIFY section:ShellWrapper }}}
-export PATH="/usr/local/opt/thrift@0.9/bin:$PATH"
-
-source <(yak completion zsh)
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
