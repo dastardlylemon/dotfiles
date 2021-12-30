@@ -54,6 +54,20 @@ set fileformats=unix,dos,mac
 set wildmenu
 set updatetime=300
 
+" Native fuzzy finding
+set path+=**
+set wildmenu
+set wildignore+=**/node_modules/**,**/bower_components/**
+
+" Tag jumping
+command! MakeTags !ctags -R .
+
+" File browsing
+let g:netrw_banner=0
+let g:netrw_liststyle=3
+let g:netrw_altv=1
+let g:netrw_list_hide=netrw_gitignore#Hide()
+
 set backspace=indent,eol,start
 
 " Enable persistent undos
@@ -171,8 +185,8 @@ let g:ale_linters = {
 \}
 
 let g:ale_fixers = {
-\ 'javascript': ['eslint'],
-\ 'typescript': ['eslint'],
+\ 'javascript': ['prettier'],
+\ 'typescript': ['prettier'],
 \}
 
 let g:ale_lint_on_enter = 0
